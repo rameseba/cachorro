@@ -59,11 +59,20 @@ export const getSiteConfig = query({
       .query("siteConfig")
       .withIndex("by_key", (q) => q.eq("key", "global"))
       .unique();
+    const logo = cfg?.logoStorageId
+      ? (await ctx.storage.getUrl(cfg.logoStorageId)) ?? "/assets/logo.png"
+      : "/assets/logo.png";
+    const logoLight = cfg?.logoLightStorageId
+      ? (await ctx.storage.getUrl(cfg.logoLightStorageId)) ?? "/assets/logo-light.png"
+      : "/assets/logo-light.png";
     return {
       whatsappNumber: cfg?.whatsappNumber ?? "56929581205",
       heroTitle: cfg?.heroTitle ?? null,
       heroSubtitle: cfg?.heroSubtitle ?? null,
       aboutText: cfg?.aboutText ?? null,
+      content: cfg?.content ?? null,
+      logo,
+      logoLight,
     };
   },
 });

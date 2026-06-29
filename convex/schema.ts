@@ -44,6 +44,11 @@ export default defineSchema({
     heroTitle: v.optional(v.string()),
     heroSubtitle: v.optional(v.string()),
     aboutText: v.optional(v.string()),
+    // Contenido editable de todas las secciones (ver app/lib/defaultContent.ts).
+    content: v.optional(v.any()),
+    // Logos editables (Convex Storage). Si no hay, se usan los estáticos en /assets.
+    logoStorageId: v.optional(v.id("_storage")),
+    logoLightStorageId: v.optional(v.id("_storage")),
   }).index("by_key", ["key"]),
 
   // Sesiones del panel admin (login con contraseña única → token).

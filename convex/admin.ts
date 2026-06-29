@@ -243,6 +243,52 @@ export const deleteReview = mutation({
 // ---------------------------------------------------------------------------
 // Configuración del sitio
 // ---------------------------------------------------------------------------
+export const updateContent = mutation({
+  args: { token: v.string(), content: v.any() },
+  handler: async (ctx, { token, content }) => {
+    await requireSesion(ctx, token);
+    const existing = await ctx.db
+      .query("siteConfig")
+      .withIndex("by_key", (q) => q.eq("key", "global"))
+      .unique();
+    if (existing) {
+      await ctx.db.patch(existing._id, { content });
+    } else {
+      await ctx.db.insert("siteConfig", {
+        key: "global",
+        whatsappNumber: "56929581205",
+        content,
+      });
+    }
+  },
+});
+
+// Guarda el logo (principal o el "light" del footer) subido a Convex Storage.
+export const updateLogo = mutation({
+  args: {
+    token: v.string(),
+    slot: v.union(v.literal("main"), v.literal("light")),
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, { token, slot, storageId }) => {
+    await requireSesion(ctx, token);
+    const field = slot === "main" ? "logoStorageId" : "logoLightStorageId";
+    const existing = await ctx.db
+      .query("siteConfig")
+      .withIndex("by_key", (q) => q.eq("key", "global"))
+      .unique();
+    if (existing) {
+      await ctx.db.patch(existing._id, { [field]: storageId });
+    } else {
+      await ctx.db.insert("siteConfig", {
+        key: "global",
+        whatsappNumber: "56929581205",
+        [field]: storageId,
+      });
+    }
+  },
+});
+
 export const updateSiteConfig = mutation({
   args: {
     token: v.string(),

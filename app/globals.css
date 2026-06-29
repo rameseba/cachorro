@@ -2242,3 +2242,14 @@ ul {
 .admin-checkbox input { width: auto; }
 .admin-section-title { font-family: var(--font-title); color: var(--primary); font-size: 1.05rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 .admin-saved { color: #1e8449; font-size: 0.8rem; }
+
+/* ===== Modo preview del editor: resaltar secciones clickeables ===== */
+body.preview-mode section,
+body.preview-mode > footer,
+body.preview-mode .footer { cursor: pointer; }
+body.preview-mode [data-edit-section] { transition: outline 0.12s ease, box-shadow 0.12s ease; }
+body.preview-mode [data-edit-section]:hover {
+  outline: 3px dashed rgba(140, 98, 57, 0.6);
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 9999px rgba(140, 98, 57, 0.04);
+}

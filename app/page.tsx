@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { DEFAULT_CONTENT, SiteContent } from "@/app/lib/defaultContent";
 
 // ---------------------------------------------------------------------------
 // Tipos y helpers
@@ -108,6 +109,33 @@ export default function Home() {
   const reviews = preview?.reviews ?? rawReviews;
   const config = preview?.config ?? rawConfig;
   const whatsappNumber = config?.whatsappNumber ?? "56929581205";
+  const C: SiteContent = (config?.content as SiteContent) ?? DEFAULT_CONTENT;
+  const logo = (config as { logo?: string })?.logo ?? "/assets/logo.png";
+  const logoLight = (config as { logoLight?: string })?.logoLight ?? "/assets/logo-light.png";
+
+  // Modo preview dentro del editor: resalta secciones y avisa al panel al hacer click.
+  const [previewMode, setPreviewMode] = useState(false);
+  useEffect(() => {
+    const inIframe = window.self !== window.top;
+    setPreviewMode(inIframe);
+    if (inIframe) document.body.classList.add("preview-mode");
+    return () => document.body.classList.remove("preview-mode");
+  }, []);
+
+  const secProps = (key: string) =>
+    previewMode
+      ? {
+          "data-edit-section": key,
+          onClick: () => {
+            try {
+              window.parent?.postMessage(
+                { type: "NOBLE_PREVIEW_CLICK_SECTION", section: key },
+                "*",
+              );
+            } catch {}
+          },
+        }
+      : {};
 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [customerPhotos, setCustomerPhotos] = useState<LocalPhoto[]>([]);
@@ -294,7 +322,7 @@ export default function Home() {
       <header className={`header${scrolled ? " scrolled" : ""}`} id="main-header">
         <div className="header-container container">
           <a href="#" className="logo" aria-label="Criadero Noble Cachorro - Página de inicio">
-            <img src="/assets/logo.png" alt="Noble Cachorro Logo" className="logo-img" id="logo-branding" width={96} height={96} />
+            <img src={logo} alt="Noble Cachorro Logo" className="logo-img" id="logo-branding" width={96} height={96} />
             <span className="logo-text sr-only">Noble Cachorro</span>
           </a>
           <nav className="nav" id="desktop-nav" aria-label="Menú principal de navegación">
@@ -326,7 +354,7 @@ export default function Home() {
         <div className="mobile-nav-content">
           <div className="mobile-nav-header">
             <a href="#" className="logo" style={{ gap: 8 }} onClick={closeMobile}>
-              <img src="/assets/logo.png" alt="Noble Cachorro Logo" className="logo-img" style={{ height: 76 }} width={76} height={76} />
+              <img src={logo} alt="Noble Cachorro Logo" className="logo-img" style={{ height: 76 }} width={76} height={76} />
               <span className="mobile-logo-text sr-only">Noble Cachorro</span>
             </a>
             <button className="mobile-nav-close" id="mobile-nav-close-btn" aria-label="Cerrar menú de navegación" onClick={closeMobile}>
@@ -358,14 +386,12 @@ export default function Home() {
 
       <main>
         {/* Hero */}
-        <section className="hero" id="inicio" aria-labelledby="hero-title">
+        <section className="hero" id="inicio" aria-labelledby="hero-title" {...secProps("hero")}>
           <div className="hero-container container">
             <div className="hero-content">
               <div className="badge-premium"><i className="fa-solid fa-certificate"></i> Crianza Responsable y Certificada</div>
-              <h1 className="hero-title" id="hero-title">{config?.heroTitle ?? "El nuevo integrante de tu familia te espera aquí"}</h1>
-              <p className="hero-subtitle" id="hero-subtitle">
-                {config?.heroSubtitle ?? "Somos Criadero Noble Cachorro, ubicados en el hermoso entorno natural de Angol, Chile. Criamos cachorros saludables, socializados y con un estándar de pureza garantizado para alegrar tu hogar."}
-              </p>
+              <h1 className="hero-title" id="hero-title">{C.hero.title}</h1>
+              <p className="hero-subtitle" id="hero-subtitle">{C.hero.subtitle}</p>
               <div className="hero-actions">
                 <a href="#tienda" className="btn btn-primary" id="btn-hero-explore">Explorar Cachorros</a>
                 <a href={`https://wa.me/${whatsappNumber}?text=Hola,%20me%20gustaría%20recibir%20asesoría%20sobre%20los%20cachorros%20disponibles.`} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" id="btn-hero-consult">
@@ -386,7 +412,7 @@ export default function Home() {
         </section>
 
         {/* Sobre Nosotros */}
-        <section className="about section-padding" id="nosotros" aria-labelledby="about-title">
+        <section className="about section-padding" id="nosotros" aria-labelledby="about-title" {...secProps("nosotros")}>
           <div className="container grid-about">
             <div className="about-images">
               <div className="about-image-main"><img src="/assets/poodle.png" alt="Cachorro Poodle criado en Angol" className="about-img-1" loading="lazy" width={300} height={300} /></div>
@@ -395,17 +421,13 @@ export default function Home() {
             </div>
             <div className="about-content">
               <div className="section-tag">Conócenos</div>
-              <h2 className="section-title" id="about-title">Somos más que un criadero, somos una gran familia</h2>
-              <p className="about-text" id="about-text-main">
-                {config?.aboutText ?? "Con más de 9 años de experiencia, nuestro criadero en Angol, Chile, se ha convertido en un referente de crianza consciente y responsable. Nos encontramos en Villa Cutipay (Parcela 7), rodeados de aire puro, vegetación y espacios acondicionados exclusivamente para el óptimo desarrollo físico y social de nuestros cachorros."}
-              </p>
-              <p className="about-text-secondary" id="about-text-sub">
-                Nuestro enfoque es simple: priorizar la salud y el temperamento de cada ejemplar. No entregamos simples mascotas; entregamos compañeros de vida saludables, equilibrados y llenos de amor.
-              </p>
+              <h2 className="section-title" id="about-title">{C.about.title}</h2>
+              <p className="about-text" id="about-text-main">{C.about.text}</p>
+              <p className="about-text-secondary" id="about-text-sub">{C.about.textSecondary}</p>
               <ul className="about-features">
-                <li><i className="fa-solid fa-shield-dog"></i> Entorno natural ideal para estimulación temprana.</li>
-                <li><i className="fa-solid fa-shield-dog"></i> Instalaciones higiénicas y climatizadas.</li>
-                <li><i className="fa-solid fa-shield-dog"></i> Transparencia absoluta en el origen de los cachorros.</li>
+                {C.about.features.map((f, i) => (
+                  <li key={i}><i className="fa-solid fa-shield-dog"></i> {f}</li>
+                ))}
               </ul>
               <a href="#contacto" className="btn btn-outline" id="btn-about-visit">Visítanos en el Criadero</a>
             </div>
@@ -413,22 +435,25 @@ export default function Home() {
         </section>
 
         {/* Garantías */}
-        <section className="garantias section-padding" id="garantias" aria-labelledby="garantias-title">
+        <section className="garantias section-padding" id="garantias" aria-labelledby="garantias-title" {...secProps("garantias")}>
           <div className="container text-center">
-            <div className="section-tag">Transparencia</div>
-            <h2 className="section-title" id="garantias-title">Nuestras Garantías de Crianza Responsable</h2>
-            <p className="section-subtitle">Para garantizar una adopción y compra responsable, exigimos y entregamos la siguiente documentación formal en cada proceso:</p>
+            <div className="section-tag">{C.garantias.tag}</div>
+            <h2 className="section-title" id="garantias-title">{C.garantias.title}</h2>
+            <p className="section-subtitle">{C.garantias.subtitle}</p>
             <div className="garantias-grid">
-              <div className="garantia-card"><div className="garantia-icon"><i className="fa-solid fa-ribbon"></i></div><h3>Certificado KCC</h3><p>Registro oficial del Kennel Club Chile que acredita formalmente la pureza de la raza, procedencia y árbol genealógico del cachorro.</p></div>
-              <div className="garantia-card"><div className="garantia-icon"><i className="fa-solid fa-file-medical"></i></div><h3>Carnet de Vacunas</h3><p>Documento médico firmado y timbrado por nuestro médico veterinario de cabecera, detallando desparasitaciones y vacunas al día.</p></div>
-              <div className="garantia-card"><div className="garantia-icon"><i className="fa-solid fa-gift"></i></div><h3>Kit Inicial de Regalo</h3><p>Te regalamos 2 kg de alimento premium de la marca <strong>Bil-Jac</strong> para asegurar una transición de dieta segura y sin estrés estomacal.</p></div>
-              <div className="garantia-card"><div className="garantia-icon"><i className="fa-solid fa-truck-moving"></i></div><h3>Despacho Especializado</h3><p>Contamos con el único vehículo adaptado, climatizado y con jaulas de seguridad del país, haciendo despachos semanales directos.</p></div>
+              {C.garantias.cards.map((card, i) => (
+                <div className="garantia-card" key={i}>
+                  <div className="garantia-icon"><i className={card.icon}></i></div>
+                  <h3>{card.title}</h3>
+                  <p>{card.text}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* Tienda */}
-        <section className="tienda section-padding" id="tienda" aria-labelledby="tienda-title">
+        <section className="tienda section-padding" id="tienda" aria-labelledby="tienda-title" {...secProps("productos")}>
           <div className="container">
             <div className="text-center">
               <div className="section-tag">Catálogo</div>
@@ -502,7 +527,7 @@ export default function Home() {
         </section>
 
         {/* Clientes Felices */}
-        <section className="clientes-felices section-padding" id="clientes-felices" aria-labelledby="clientes-title">
+        <section className="clientes-felices section-padding" id="clientes-felices" aria-labelledby="clientes-title" {...secProps("resenas")}>
           <div className="container">
             <div className="text-center">
               <div className="section-tag">Comunidad</div>
@@ -545,15 +570,15 @@ export default function Home() {
         </section>
 
         {/* FAQ */}
-        <section className="faq section-padding" id="faq" aria-labelledby="faq-title">
+        <section className="faq section-padding" id="faq" aria-labelledby="faq-title" {...secProps("faq")}>
           <div className="container faq-container">
             <div className="text-center">
-              <div className="section-tag">Resolviendo Dudas</div>
-              <h2 className="section-title" id="faq-title">Preguntas Frecuentes</h2>
-              <p className="section-subtitle">Todo lo que necesitas saber antes de dar la bienvenida a tu nuevo mejor amigo.</p>
+              <div className="section-tag">{C.faq.tag}</div>
+              <h2 className="section-title" id="faq-title">{C.faq.title}</h2>
+              <p className="section-subtitle">{C.faq.subtitle}</p>
             </div>
             <div className="accordion" id="faq-accordion">
-              {FAQ_ITEMS.map((item, i) => (
+              {C.faq.items.map((item, i) => (
                 <div className={`accordion-item${faqOpen === i ? " active" : ""}`} key={i}>
                   <button className="accordion-header" aria-expanded={faqOpen === i} onClick={() => setFaqOpen(faqOpen === i ? null : i)}>
                     <span>{item.q}</span>
@@ -569,22 +594,22 @@ export default function Home() {
         </section>
 
         {/* Contacto */}
-        <section className="contacto section-padding" id="contacto" aria-labelledby="contacto-title">
+        <section className="contacto section-padding" id="contacto" aria-labelledby="contacto-title" {...secProps("contacto")}>
           <div className="container grid-contacto">
             <div className="contacto-info">
-              <div className="section-tag">Ubicación y Horarios</div>
-              <h2 className="section-title text-left" id="contacto-title">¿Listo para dar el paso? Contáctanos</h2>
-              <p className="contacto-description">Ubicados en un entorno verde y limpio, perfecto para el desarrollo de los cachorros. Escríbenos o visítanos.</p>
+              <div className="section-tag">{C.contacto.tag}</div>
+              <h2 className="section-title text-left" id="contacto-title">{C.contacto.title}</h2>
+              <p className="contacto-description">{C.contacto.description}</p>
               <div className="info-items">
-                <div className="info-item"><i className="fa-solid fa-map-location-dot" aria-hidden="true"></i><div><h3>Ubicación</h3><p id="contact-address">Villa Cutipay, Parcela 7, Angol, Chile</p></div></div>
-                <div className="info-item"><i className="fa-solid fa-clock" aria-hidden="true"></i><div><h3>Atención Presencial</h3><p>Lunes a Viernes de 09:00 a 16:00 hrs</p></div></div>
-                <div className="info-item"><i className="fa-solid fa-paper-plane" aria-hidden="true"></i><div><h3>Contacto Online</h3><p>Soporte por WhatsApp 24/7 para emergencias de crianza.</p></div></div>
+                <div className="info-item"><i className="fa-solid fa-map-location-dot" aria-hidden="true"></i><div><h3>Ubicación</h3><p id="contact-address">{C.contacto.address}</p></div></div>
+                <div className="info-item"><i className="fa-solid fa-clock" aria-hidden="true"></i><div><h3>Atención Presencial</h3><p>{C.contacto.hours}</p></div></div>
+                <div className="info-item"><i className="fa-solid fa-paper-plane" aria-hidden="true"></i><div><h3>Contacto Online</h3><p>{C.contacto.online}</p></div></div>
               </div>
               <div className="social-links">
-                <a href="https://www.facebook.com/share/1DGGsDNWYv/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
-                <a href="https://www.instagram.com/noble_cachorro?igsh=MWJ2ZjNoanczNm1mMw%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
-                <a href="https://www.tiktok.com/@noble_cachorro?_r=1&_t=ZS-97bR4TiGKAu" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i className="fa-brands fa-tiktok"></i></a>
-                <a href="https://wa.me/56929581205" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="fa-brands fa-whatsapp"></i></a>
+                <a href={C.contacto.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
+                <a href={C.contacto.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
+                <a href={C.contacto.social.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i className="fa-brands fa-tiktok"></i></a>
+                <a href={C.contacto.social.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="fa-brands fa-whatsapp"></i></a>
               </div>
             </div>
             <div className="contacto-card">
@@ -660,11 +685,11 @@ export default function Home() {
       </aside>
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="footer" {...secProps("footer")}>
         <div className="container grid-footer">
           <div className="footer-brand">
-            <div className="footer-logo"><img src="/assets/logo-light.png" alt="Noble Cachorro Logo" className="footer-logo-img" width={140} height={140} /><span className="sr-only">Noble Cachorro</span></div>
-            <p className="footer-description">Criadero premium de razas pequeñas y grandes en Chile. Comprometidos con el bienestar, salud y la crianza responsable.</p>
+            <div className="footer-logo"><img src={logoLight} alt="Noble Cachorro Logo" className="footer-logo-img" width={140} height={140} /><span className="sr-only">Noble Cachorro</span></div>
+            <p className="footer-description">{C.footer.description}</p>
           </div>
           <div className="footer-links">
             <h3>Enlaces Útiles</h3>
@@ -685,9 +710,9 @@ export default function Home() {
           </div>
           <div className="footer-contacto">
             <h3>Contacto</h3>
-            <p><i className="fa-solid fa-phone"></i> <span id="footer-phone">+56 9 2958 1205</span></p>
-            <p><i className="fa-solid fa-envelope"></i> <span id="footer-email">contacto@noblecachorro.cl</span></p>
-            <p><i className="fa-solid fa-location-dot"></i> <span id="footer-address">Angol, Región de la Araucanía, Chile</span></p>
+            <p><i className="fa-solid fa-phone"></i> <span id="footer-phone">{C.footer.phone}</span></p>
+            <p><i className="fa-solid fa-envelope"></i> <span id="footer-email">{C.footer.email}</span></p>
+            <p><i className="fa-solid fa-location-dot"></i> <span id="footer-address">{C.footer.address}</span></p>
           </div>
         </div>
         <div className="footer-bottom">
@@ -696,7 +721,7 @@ export default function Home() {
               Diseñado con ❤️ por <a href="https://rameseba.com" target="_blank" rel="noopener noreferrer">@rameseba</a>
             </div>
             <div className="footer-copyright-legal">
-              <p>Copyright © 2026 Criadero Noble Cachorro.</p>
+              <p>{C.footer.copyright}</p>
               <div className="footer-legal-links">
                 <a href="/politicas-privacidad">Políticas de Privacidad</a>
                 <span className="separator">•</span>
@@ -710,21 +735,3 @@ export default function Home() {
   );
 }
 
-const FAQ_ITEMS = [
-  {
-    q: "¿Qué documentos entregan con el cachorro?",
-    a: "Entregamos el Certificado KCC (Kennel Club de Chile), el carnet de vacunas y desparasitaciones al día firmado por un veterinario colegiado, una guía de cuidados del cachorro y un kit inicial de alimento de 2 kg.",
-  },
-  {
-    q: "¿Realizan envíos a domicilio en otras regiones?",
-    a: "Sí, somos el único criadero en Chile con un vehículo propio totalmente adaptado para el traslado cómodo y seguro de mascotas. Realizamos viajes semanales a Santiago, Valparaíso, Concepción y gran parte del país.",
-  },
-  {
-    q: "¿Puedo visitar el criadero de forma presencial?",
-    a: "¡Por supuesto! Estaremos encantados de recibirte en nuestras instalaciones ubicadas en Villa Cutipay (Parcela 7) en Angol. Por motivos de bioseguridad para los cachorros más pequeños, las visitas presenciales deben coordinarse previamente de Lunes a Viernes de 09:00 a 16:00 hrs.",
-  },
-  {
-    q: "¿Qué garantía de salud ofrecen?",
-    a: "Ofrecemos una garantía de salud post-entrega de 10 días contra enfermedades virales comunes (como parvovirus o distemper), y garantizamos de por vida la pureza genética de raza mediante la entrega de su pedigree KCC.",
-  },
-];
