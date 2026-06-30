@@ -3,6 +3,8 @@
 // editor usan estos valores como fallback cuando un campo no está definido.
 
 export type GarantiaCard = { icon: string; title: string; text: string };
+export type ServicioCard = { icon: string; title: string; text: string };
+export type TrasladoStep = { title: string; text: string };
 export type FaqItem = { q: string; a: string };
 export type LegalSection = { heading: string; body: string };
 export type LegalDoc = {
@@ -16,6 +18,8 @@ export type SiteContent = {
   hero: { title: string; subtitle: string };
   about: { title: string; text: string; textSecondary: string; features: string[] };
   garantias: { tag: string; title: string; subtitle: string; cards: GarantiaCard[] };
+  servicios: { tag: string; title: string; subtitle: string; cards: ServicioCard[] };
+  traslado: { tag: string; title: string; intro: string; note: string; steps: TrasladoStep[]; cta: string };
   faq: { tag: string; title: string; subtitle: string; items: FaqItem[] };
   contacto: {
     tag: string;
@@ -35,6 +39,13 @@ export type SiteContent = {
   };
   legal: { privacy: LegalDoc; terms: LegalDoc };
 };
+
+// Combina el contenido guardado con los valores por defecto, de modo que las
+// secciones nuevas (añadidas después de un guardado anterior) no rompan el render.
+export function withDefaults(stored: unknown): SiteContent {
+  if (!stored || typeof stored !== "object") return DEFAULT_CONTENT;
+  return { ...DEFAULT_CONTENT, ...(stored as Partial<SiteContent>) } as SiteContent;
+}
 
 export const DEFAULT_CONTENT: SiteContent = {
   hero: {
@@ -65,6 +76,34 @@ export const DEFAULT_CONTENT: SiteContent = {
       { icon: "fa-solid fa-gift", title: "Kit Inicial de Regalo", text: "Te regalamos 2 kg de alimento premium de la marca Bil-Jac para asegurar una transición de dieta segura y sin estrés estomacal." },
       { icon: "fa-solid fa-truck-moving", title: "Despacho Especializado", text: "Contamos con el único vehículo adaptado, climatizado y con jaulas de seguridad del país, haciendo despachos semanales directos." },
     ],
+  },
+  servicios: {
+    tag: "Lo que ofrecemos",
+    title: "Nuestros Servicios",
+    subtitle: "Crianza de calidad, traslados seguros y asesoría experta. Te acompañamos antes, durante y después de la llegada de tu cachorro.",
+    cards: [
+      { icon: "fa-solid fa-hand-holding-heart", title: "Asesoría en la crianza", text: "Acompañamiento profesional y personalizado en cada etapa: adaptación, alimentación, salud y educación de tu cachorro." },
+      { icon: "fa-solid fa-house-chimney-window", title: "Guía de primeros días en casa", text: "Te ayudamos a preparar un espacio seguro y a recibir a tu cachorro sin estrés durante sus primeros días en el hogar." },
+      { icon: "fa-solid fa-truck-medical", title: "Traslado seguro de tu mascota", text: "Único criadero con vehículo adaptado para mascotas: viajes semanales puerta a puerta con seguimiento en tiempo real." },
+      { icon: "fa-solid fa-bowl-food", title: "Plan de alimentación", text: "Tabla personalizada según peso y edad, con recomendaciones para una transición de alimento segura y gradual." },
+      { icon: "fa-solid fa-stethoscope", title: "Salud y control veterinario", text: "Calendario de vacunas, desparasitación y señales de alerta para mantener a tu cachorro sano y feliz." },
+      { icon: "fa-solid fa-paw", title: "Educación inicial", text: "Guía de entrenamiento de baño, socialización y manejo de mordidas y juegos para un cachorro equilibrado." },
+    ],
+  },
+  traslado: {
+    tag: "Servicio Exclusivo",
+    title: "Su Tranquilidad es Nuestra Prioridad: Traslado Seguro",
+    intro: "Garantizamos un proceso de reubicación seguro, ético y libre de estrés. Contamos con protocolos especializados para cachorros pequeños y grandes, asegurando que cada compañero llegue a su nuevo hogar en óptimas condiciones de salud y con el mismo buen temperamento con el que fue criado.",
+    note: "Aseguramos transparencia total desde la reserva hasta la entrega, ya sea para razas pequeñas o grandes. Recuerda que también puedes venir a buscar tu cachorro directo a nuestro criadero.",
+    steps: [
+      { title: "Reserva del cachorro", text: "Una vez seleccionada la raza y el cachorro, formalizas la reserva. En este punto se definen las necesidades específicas del traslado." },
+      { title: "Elección del día de traslado", text: "Coordinamos juntos la fecha ideal, respetando los tiempos de cuarentena y documentación, y procurando condiciones climáticas óptimas. Nuestro móvil canino sale cada 7 días." },
+      { title: "Envío de documentación", text: "Te enviamos toda la documentación oficial del cachorro (certificado de salud, vacunas y registro) antes del viaje, para tu revisión y preparación." },
+      { title: "Seguimiento constante", text: "Sigue a tu cachorro en todo momento con el número de seguimiento que te entregamos. Estarás informado de su estado en tiempo real." },
+      { title: "Recepción y bienvenida", text: "¡Prepárate para recibir al nuevo integrante de la familia! Te damos instrucciones precisas sobre la llegada al punto de entrega y los primeros cuidados." },
+      { title: "Recuerdo y cierre", text: "Una vez concretada la entrega, celebramos este gran momento con una foto junto a tu nuevo compañero." },
+    ],
+    cta: "Coordinar mi traslado por WhatsApp",
   },
   faq: {
     tag: "Resolviendo Dudas",

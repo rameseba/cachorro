@@ -2,11 +2,11 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { DEFAULT_CONTENT, SiteContent } from "./defaultContent";
+import { SiteContent, withDefaults } from "./defaultContent";
 
 export function LegalView({ docKey }: { docKey: "privacy" | "terms" }) {
   const config = useQuery(api.public.getSiteConfig);
-  const C: SiteContent = (config?.content as SiteContent) ?? DEFAULT_CONTENT;
+  const C: SiteContent = withDefaults(config?.content);
   const doc = C.legal[docKey];
 
   return (

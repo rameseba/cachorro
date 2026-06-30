@@ -68,6 +68,9 @@ export const getSiteConfig = query({
     const heroImage = cfg?.heroImageStorageId
       ? (await ctx.storage.getUrl(cfg.heroImageStorageId)) ?? "/assets/hero_dog.png"
       : "/assets/hero_dog.png";
+    const trasladoImage = cfg?.trasladoImageStorageId
+      ? await ctx.storage.getUrl(cfg.trasladoImageStorageId)
+      : null;
     return {
       whatsappNumber: cfg?.whatsappNumber ?? "56929581205",
       heroTitle: cfg?.heroTitle ?? null,
@@ -77,6 +80,7 @@ export const getSiteConfig = query({
       logo,
       logoLight,
       heroImage,
+      trasladoImage,
     };
   },
 });

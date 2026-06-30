@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAdminToken } from "../useAdmin";
-import { DEFAULT_CONTENT, SiteContent } from "@/app/lib/defaultContent";
+import { DEFAULT_CONTENT, SiteContent, withDefaults } from "@/app/lib/defaultContent";
 
 type Cat = "pequena" | "grande" | "alimento";
 
@@ -15,6 +15,8 @@ const SECTIONS: { key: string; label: string; hint: string }[] = [
   { key: "hero", label: "Portada (Hero)", hint: "Título y subtítulo principal" },
   { key: "nosotros", label: "Sobre Nosotros", hint: "Texto y características" },
   { key: "garantias", label: "Garantías", hint: "Las 4 tarjetas" },
+  { key: "servicios", label: "Servicios", hint: "Tarjetas de servicios" },
+  { key: "traslado", label: "Traslado de Mascota", hint: "Proceso paso a paso + foto" },
   { key: "faq", label: "Preguntas (FAQ)", hint: "Preguntas frecuentes" },
   { key: "contacto", label: "Contacto", hint: "Dirección, horarios y redes" },
   { key: "footer", label: "Pie de página", hint: "Descripción y datos" },
@@ -88,7 +90,7 @@ export default function Editor() {
   useEffect(() => {
     if (config && !loadedRef.current) {
       setWhatsapp(config.whatsappNumber ?? "");
-      setContent((config.content as SiteContent) ?? DEFAULT_CONTENT);
+      setContent(withDefaults(config.content));
       loadedRef.current = true;
     }
   }, [config]);
@@ -147,6 +149,7 @@ export default function Editor() {
         logo: config?.logo ?? "/assets/logo.png",
         logoLight: config?.logoLight ?? "/assets/logo-light.png",
         heroImage: (config as { heroImage?: string })?.heroImage ?? "/assets/hero_dog.png",
+        trasladoImage: (config as { trasladoImage?: string | null })?.trasladoImage ?? null,
       },
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -350,6 +353,61 @@ export default function Editor() {
                       <Field label="Texto" area value={card.text} onChange={(v) => upd((c) => { c.garantias.cards[i].text = v; })} />
                     </div>
                   ))}
+                  <ContentSave onSave={saveContent} />
+                </div>
+              )}
+
+              {/* ----- SERVICIOS ----- */}
+              {section === "servicios" && (
+                <div>
+                  <div className="admin-card">
+                    <Field label="Etiqueta" value={content.servicios.tag} onChange={(v) => upd((c) => { c.servicios.tag = v; })} />
+                    <Field label="Título" value={content.servicios.title} onChange={(v) => upd((c) => { c.servicios.title = v; })} />
+                    <Field label="Subtítulo" area value={content.servicios.subtitle} onChange={(v) => upd((c) => { c.servicios.subtitle = v; })} />
+                  </div>
+                  {content.servicios.cards.map((card, i) => (
+                    <div className="admin-card" key={i}>
+                      <Field label={`Servicio ${i + 1} — Título`} value={card.title} onChange={(v) => upd((c) => { c.servicios.cards[i].title = v; })} />
+                      <Field label="Texto" area value={card.text} onChange={(v) => upd((c) => { c.servicios.cards[i].text = v; })} />
+                      <Field label="Ícono (clase Font Awesome)" value={card.icon} onChange={(v) => upd((c) => { c.servicios.cards[i].icon = v; })} ph="fa-solid fa-paw" />
+                      <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => upd((c) => { c.servicios.cards.splice(i, 1); })}>Eliminar servicio</button>
+                    </div>
+                  ))}
+                  <button className="admin-btn admin-btn-ghost admin-btn-sm" onClick={() => upd((c) => { c.servicios.cards.push({ icon: "fa-solid fa-paw", title: "Nuevo servicio", text: "Descripción del servicio." }); })}>+ Servicio</button>
+                  <ContentSave onSave={saveContent} />
+                </div>
+              )}
+
+              {/* ----- TRASLADO ----- */}
+              {section === "traslado" && (
+                <div>
+                  <div className="admin-card">
+                    <Field label="Etiqueta" value={content.traslado.tag} onChange={(v) => upd((c) => { c.traslado.tag = v; })} />
+                    <Field label="Título" value={content.traslado.title} onChange={(v) => upd((c) => { c.traslado.title = v; })} />
+                    <Field label="Introducción" area value={content.traslado.intro} onChange={(v) => upd((c) => { c.traslado.intro = v; })} />
+                    <div className="admin-field">
+                      <label>Foto del traslado (tu imagen)</label>
+                      <div className="admin-card-row">
+                        {(config as any)?.trasladoImage ? <img className="admin-thumb" src={(config as any).trasladoImage} alt="Traslado" /> : <div className="admin-thumb" />}
+                        <label className="admin-btn admin-btn-ghost admin-btn-sm" style={{ cursor: "pointer" }}>
+                          Subir foto
+                          <input type="file" accept="image/*" style={{ display: "none" }} onChange={async (e) => { const f = e.target.files?.[0]; if (!f) return; const storageId = await uploadImage(f); await updateLogo({ token: token!, slot: "traslado", storageId: storageId as any }); flash("Foto del traslado actualizada"); e.target.value = ""; }} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  {content.traslado.steps.map((step, i) => (
+                    <div className="admin-card" key={i}>
+                      <Field label={`Paso ${i + 1} — Título`} value={step.title} onChange={(v) => upd((c) => { c.traslado.steps[i].title = v; })} />
+                      <Field label="Texto" area value={step.text} onChange={(v) => upd((c) => { c.traslado.steps[i].text = v; })} />
+                      <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => upd((c) => { c.traslado.steps.splice(i, 1); })}>Eliminar paso</button>
+                    </div>
+                  ))}
+                  <button className="admin-btn admin-btn-ghost admin-btn-sm" onClick={() => upd((c) => { c.traslado.steps.push({ title: "Nuevo paso", text: "Descripción del paso." }); })}>+ Paso</button>
+                  <div className="admin-card">
+                    <Field label="Nota final" area value={content.traslado.note} onChange={(v) => upd((c) => { c.traslado.note = v; })} />
+                    <Field label="Texto del botón (CTA)" value={content.traslado.cta} onChange={(v) => upd((c) => { c.traslado.cta = v; })} />
+                  </div>
                   <ContentSave onSave={saveContent} />
                 </div>
               )}

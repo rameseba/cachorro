@@ -51,6 +51,8 @@ export default defineSchema({
     logoLightStorageId: v.optional(v.id("_storage")),
     // Imagen de portada (banner principal del hero).
     heroImageStorageId: v.optional(v.id("_storage")),
+    // Imagen de la sección "Traslado de la Mascota".
+    trasladoImageStorageId: v.optional(v.id("_storage")),
   }).index("by_key", ["key"]),
 
   // Sesiones del panel admin (login con contraseña única → token).

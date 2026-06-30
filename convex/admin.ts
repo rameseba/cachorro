@@ -267,7 +267,12 @@ export const updateContent = mutation({
 export const updateLogo = mutation({
   args: {
     token: v.string(),
-    slot: v.union(v.literal("main"), v.literal("light"), v.literal("hero")),
+    slot: v.union(
+      v.literal("main"),
+      v.literal("light"),
+      v.literal("hero"),
+      v.literal("traslado"),
+    ),
     storageId: v.id("_storage"),
   },
   handler: async (ctx, { token, slot, storageId }) => {
@@ -277,7 +282,9 @@ export const updateLogo = mutation({
         ? "logoStorageId"
         : slot === "light"
           ? "logoLightStorageId"
-          : "heroImageStorageId";
+          : slot === "hero"
+            ? "heroImageStorageId"
+            : "trasladoImageStorageId";
     const existing = await ctx.db
       .query("siteConfig")
       .withIndex("by_key", (q) => q.eq("key", "global"))

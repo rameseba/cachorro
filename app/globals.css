@@ -2243,6 +2243,90 @@ ul {
 .admin-section-title { font-family: var(--font-title); color: var(--primary); font-size: 1.05rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 .admin-saved { color: #1e8449; font-size: 0.8rem; }
 
+/* ===== Sección Servicios ===== */
+.servicios { background: linear-gradient(180deg, #ffffff 0%, #faf7f2 100%); }
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+  margin-top: 48px;
+}
+.servicio-card {
+  background: #fff;
+  border: 1px solid rgba(140, 98, 57, 0.1);
+  border-radius: var(--border-radius, 16px);
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(140, 98, 57, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.servicio-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(140, 98, 57, 0.14);
+}
+.servicio-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary, #8c6239), var(--secondary, #d9a05b));
+  color: #fff;
+  font-size: 1.6rem;
+}
+.servicio-card h3 { font-family: var(--font-title, serif); color: var(--primary, #8c6239); font-size: 1.2rem; margin-bottom: 10px; }
+.servicio-card p { color: var(--text-muted, #6b6258); line-height: 1.6; font-size: 0.96rem; }
+
+/* ===== Sección Traslado de la Mascota ===== */
+.traslado-header { text-align: center; max-width: 820px; margin: 0 auto; }
+.traslado-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-top: 48px;
+}
+.traslado-body:has(.traslado-steps:only-child) { grid-template-columns: 1fr; max-width: 760px; margin-left: auto; margin-right: auto; }
+.traslado-image { position: sticky; top: 100px; }
+.traslado-image img {
+  width: 100%;
+  border-radius: var(--border-radius, 16px);
+  box-shadow: 0 18px 44px rgba(140, 98, 57, 0.18);
+  object-fit: cover;
+}
+.traslado-steps { display: flex; flex-direction: column; gap: 22px; }
+.traslado-step { display: flex; gap: 18px; align-items: flex-start; }
+.traslado-step-num {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary, #8c6239), var(--secondary, #d9a05b));
+  box-shadow: 0 6px 16px rgba(140, 98, 57, 0.25);
+}
+.traslado-step-body h3 { font-family: var(--font-title, serif); color: var(--primary, #8c6239); font-size: 1.1rem; margin-bottom: 4px; }
+.traslado-step-body p { color: var(--text-muted, #6b6258); line-height: 1.6; font-size: 0.96rem; }
+.traslado-note {
+  max-width: 820px;
+  margin: 40px auto 0;
+  text-align: center;
+  font-style: italic;
+  color: var(--text-muted, #6b6258);
+}
+.traslado-cta { margin-top: 28px; }
+@media (max-width: 860px) {
+  .traslado-body { grid-template-columns: 1fr; gap: 32px; }
+  .traslado-image { position: static; order: -1; }
+}
+
 /* ===== Mapa de Google Maps en Contacto ===== */
 .contacto-map {
   margin-top: 24px;

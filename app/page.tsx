@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { DEFAULT_CONTENT, SiteContent } from "@/app/lib/defaultContent";
+import { SiteContent, withDefaults } from "@/app/lib/defaultContent";
 
 // ---------------------------------------------------------------------------
 // Tipos y helpers
@@ -100,10 +100,11 @@ export default function Home() {
   const reviews = preview?.reviews ?? rawReviews;
   const config = preview?.config ?? rawConfig;
   const whatsappNumber = config?.whatsappNumber ?? "56929581205";
-  const C: SiteContent = (config?.content as SiteContent) ?? DEFAULT_CONTENT;
+  const C: SiteContent = withDefaults(config?.content);
   const logo = (config as { logo?: string })?.logo ?? "/assets/logo.png";
   const logoLight = (config as { logoLight?: string })?.logoLight ?? "/assets/logo-light.png";
   const heroImage = (config as { heroImage?: string })?.heroImage ?? "/assets/hero_dog.png";
+  const trasladoImage = (config as { trasladoImage?: string | null })?.trasladoImage ?? null;
 
   // Modo preview dentro del editor: resalta secciones y avisa al panel al hacer click.
   const [previewMode, setPreviewMode] = useState(false);
@@ -275,6 +276,8 @@ export default function Home() {
               <li><a href="#inicio" className="nav-link active">Inicio</a></li>
               <li><a href="#nosotros" className="nav-link">Sobre Nosotros</a></li>
               <li><a href="#garantias" className="nav-link">Garantías</a></li>
+              <li><a href="#servicios" className="nav-link">Servicios</a></li>
+              <li><a href="#traslado" className="nav-link">Traslado</a></li>
               <li><a href="#tienda" className="nav-link">Cachorros y Tienda</a></li>
               <li><a href="#clientes-felices" className="nav-link">Clientes Felices</a></li>
               <li><a href="#faq" className="nav-link">Preguntas Frecuentes</a></li>
@@ -311,6 +314,8 @@ export default function Home() {
               <li><a href="#inicio" className="mobile-nav-link" onClick={closeMobile}>Inicio</a></li>
               <li><a href="#nosotros" className="mobile-nav-link" onClick={closeMobile}>Sobre Nosotros</a></li>
               <li><a href="#garantias" className="mobile-nav-link" onClick={closeMobile}>Garantías</a></li>
+              <li><a href="#servicios" className="mobile-nav-link" onClick={closeMobile}>Servicios</a></li>
+              <li><a href="#traslado" className="mobile-nav-link" onClick={closeMobile}>Traslado de Mascota</a></li>
               <li><a href="#tienda" className="mobile-nav-link" onClick={closeMobile}>Cachorros y Tienda</a></li>
               <li><a href="#clientes-felices" className="mobile-nav-link" onClick={closeMobile}>Clientes Felices</a></li>
               <li><a href="#faq" className="mobile-nav-link" onClick={closeMobile}>Preguntas Frecuentes</a></li>
@@ -393,6 +398,64 @@ export default function Home() {
                   <p>{card.text}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Servicios */}
+        <section className="servicios section-padding" id="servicios" aria-labelledby="servicios-title" {...secProps("servicios")}>
+          <div className="container text-center">
+            <div className="section-tag">{C.servicios.tag}</div>
+            <h2 className="section-title" id="servicios-title">{C.servicios.title}</h2>
+            <p className="section-subtitle">{C.servicios.subtitle}</p>
+            <div className="servicios-grid">
+              {C.servicios.cards.map((card, i) => (
+                <div className="servicio-card" key={i}>
+                  <div className="servicio-icon"><i className={card.icon}></i></div>
+                  <h3>{card.title}</h3>
+                  <p>{card.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Traslado de la Mascota */}
+        <section className="traslado section-padding" id="traslado" aria-labelledby="traslado-title" {...secProps("traslado")}>
+          <div className="container">
+            <div className="traslado-header">
+              <div className="section-tag">{C.traslado.tag}</div>
+              <h2 className="section-title" id="traslado-title">{C.traslado.title}</h2>
+              <p className="section-subtitle">{C.traslado.intro}</p>
+            </div>
+            <div className="traslado-body">
+              {trasladoImage && (
+                <div className="traslado-image">
+                  <img src={trasladoImage} alt="Traslado seguro de cachorros del Criadero Noble Cachorro" loading="lazy" />
+                </div>
+              )}
+              <div className="traslado-steps">
+                {C.traslado.steps.map((step, i) => (
+                  <div className="traslado-step" key={i}>
+                    <div className="traslado-step-num">{i + 1}</div>
+                    <div className="traslado-step-body">
+                      <h3>{step.title}</h3>
+                      <p>{step.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p className="traslado-note">{C.traslado.note}</p>
+            <div className="traslado-cta text-center">
+              <a
+                href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("¡Hola Criadero Noble Cachorro! 🐾 Quiero coordinar el traslado de mi cachorro. ¿Me ayudan con el proceso?")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+              >
+                <i className="fa-brands fa-whatsapp"></i> {C.traslado.cta}
+              </a>
             </div>
           </div>
         </section>
