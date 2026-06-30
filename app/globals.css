@@ -2243,10 +2243,26 @@ ul {
 .admin-section-title { font-family: var(--font-title); color: var(--primary); font-size: 1.05rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 .admin-saved { color: #1e8449; font-size: 0.8rem; }
 
+/* ===== Mapa de Google Maps en Contacto ===== */
+.contacto-map {
+  margin-top: 24px;
+  border-radius: var(--border-radius, 16px);
+  overflow: hidden;
+  box-shadow: var(--glass-shadow, 0 10px 30px rgba(140, 98, 57, 0.12));
+  border: 1px solid rgba(140, 98, 57, 0.12);
+}
+.contacto-map iframe {
+  display: block;
+  width: 100%;
+  height: 260px;
+  border: 0;
+}
+
 /* ===== Modo preview del editor: resaltar secciones clickeables ===== */
 body.preview-mode section,
 body.preview-mode > footer,
-body.preview-mode .footer { cursor: pointer; }
+body.preview-mode .footer,
+body.preview-mode header.header { cursor: pointer; }
 body.preview-mode [data-edit-section] { transition: outline 0.12s ease, box-shadow 0.12s ease; }
 body.preview-mode [data-edit-section]:hover {
   outline: 3px dashed rgba(140, 98, 57, 0.6);

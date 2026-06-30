@@ -37,14 +37,6 @@ type CartItem = {
   quantity: number;
 };
 
-type LocalPhoto = {
-  id: string;
-  name: string;
-  date: string;
-  feedback: string;
-  image: string;
-};
-
 type Toast = { id: number; message: string; type: "info" | "success" | "danger" };
 
 function formatPrice(n: number) {
@@ -74,7 +66,6 @@ const FoodBagSVG = () => (
 );
 
 const CART_KEY = "noblecachorro_cart";
-const PHOTOS_KEY = "noblecachorro_customer_photos";
 
 // ---------------------------------------------------------------------------
 // Componente principal
@@ -112,6 +103,7 @@ export default function Home() {
   const C: SiteContent = (config?.content as SiteContent) ?? DEFAULT_CONTENT;
   const logo = (config as { logo?: string })?.logo ?? "/assets/logo.png";
   const logoLight = (config as { logoLight?: string })?.logoLight ?? "/assets/logo-light.png";
+  const heroImage = (config as { heroImage?: string })?.heroImage ?? "/assets/hero_dog.png";
 
   // Modo preview dentro del editor: resalta secciones y avisa al panel al hacer click.
   const [previewMode, setPreviewMode] = useState(false);
@@ -138,7 +130,6 @@ export default function Home() {
       : {};
 
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [customerPhotos, setCustomerPhotos] = useState<LocalPhoto[]>([]);
   const [filter, setFilter] = useState<"all" | "pequena" | "grande" | "alimento">("all");
   const [search, setSearch] = useState("");
   const [cartOpen, setCartOpen] = useState(false);
@@ -153,8 +144,6 @@ export default function Home() {
     try {
       const c = localStorage.getItem(CART_KEY);
       if (c) setCart(JSON.parse(c));
-      const p = localStorage.getItem(PHOTOS_KEY);
-      if (p) setCustomerPhotos(JSON.parse(p));
     } catch {}
   }, []);
 
@@ -244,48 +233,6 @@ export default function Home() {
     form.reset();
   };
 
-  // --- Galería de clientes (local) ---
-  const deleteClientPhoto = (id: string) => {
-    setCustomerPhotos((prev) => {
-      const next = prev.filter((p) => p.id !== id);
-      localStorage.setItem(PHOTOS_KEY, JSON.stringify(next));
-      return next;
-    });
-    showToast("Foto de cliente eliminada.", "danger");
-  };
-
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      showToast("Por favor selecciona un archivo de imagen válido.", "danger");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64Image = event.target?.result as string;
-      const clientName = prompt("Ingresa el nombre del cliente o familia:", "Familia Feliz");
-      if (clientName === null) return;
-      const feedbackText = prompt("Ingresa un comentario o reseña:", "¡Muy felices con la entrega del cachorro!");
-      if (feedbackText === null) return;
-      const newPhoto: LocalPhoto = {
-        id: "cust-" + Date.now(),
-        name: clientName || "Cliente Satisfecho",
-        date: "Hoy mismo",
-        feedback: feedbackText || "¡Excelente experiencia!",
-        image: base64Image,
-      };
-      setCustomerPhotos((prev) => {
-        const next = [newPhoto, ...prev];
-        localStorage.setItem(PHOTOS_KEY, JSON.stringify(next));
-        return next;
-      });
-      showToast("¡Foto de entrega subida con éxito!", "success");
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
-  };
-
   // --- Catálogo filtrado ---
   const filtered = products.filter((p) => {
     const matchesFilter = filter === "all" || p.category === filter;
@@ -293,8 +240,6 @@ export default function Home() {
     const matchesSearch = p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
     return matchesFilter && matchesSearch;
   });
-
-  const allPhotos = [...customerPhotos, ...reviews.map((r) => ({ ...r, isDefault: true }))];
 
   const closeMobile = () => setMobileNavOpen(false);
 
@@ -321,7 +266,7 @@ export default function Home() {
       {/* Cabecera */}
       <header className={`header${scrolled ? " scrolled" : ""}`} id="main-header">
         <div className="header-container container">
-          <a href="#" className="logo" aria-label="Criadero Noble Cachorro - Página de inicio">
+          <a href="#" className="logo" aria-label="Criadero Noble Cachorro - Página de inicio" {...secProps("logo")}>
             <img src={logo} alt="Noble Cachorro Logo" className="logo-img" id="logo-branding" width={96} height={96} />
             <span className="logo-text sr-only">Noble Cachorro</span>
           </a>
@@ -375,10 +320,10 @@ export default function Home() {
           <div className="mobile-nav-footer">
             <p>Criando con amor y responsabilidad desde 2017.</p>
             <div className="social-links-mobile">
-              <a href="https://www.facebook.com/share/1DGGsDNWYv/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
-              <a href="https://www.instagram.com/noble_cachorro?igsh=MWJ2ZjNoanczNm1mMw%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
-              <a href="https://www.tiktok.com/@noble_cachorro?_r=1&_t=ZS-97bR4TiGKAu" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i className="fa-brands fa-tiktok"></i></a>
-              <a href="https://wa.me/56929581205" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="fa-brands fa-whatsapp"></i></a>
+              <a href={C.contacto.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
+              <a href={C.contacto.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
+              <a href={C.contacto.social.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i className="fa-brands fa-tiktok"></i></a>
+              <a href={C.contacto.social.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="fa-brands fa-whatsapp"></i></a>
             </div>
           </div>
         </div>
@@ -406,7 +351,7 @@ export default function Home() {
             </div>
             <div className="hero-image-wrapper">
               <div className="hero-image-bg"></div>
-              <img src="/assets/hero_dog.png" alt="Hermosos cachorros criados por Noble Cachorro listos para su nuevo hogar" className="hero-img" width={600} height={520} />
+              <img src={heroImage} alt="Hermosos cachorros criados por Noble Cachorro listos para su nuevo hogar" className="hero-img" width={600} height={520} />
             </div>
           </div>
         </section>
@@ -534,25 +479,9 @@ export default function Home() {
               <h2 className="section-title" id="clientes-title">Clientes Felices</h2>
               <p className="section-subtitle">Compartimos la alegría y emoción de las familias al recibir a sus cachorros de Criadero Noble Cachorro.</p>
             </div>
-            <div className="upload-photo-container">
-              <div className="upload-card">
-                <div className="upload-icon"><i className="fa-solid fa-images"></i></div>
-                <h3>¿Recibiste a tu cachorro?</h3>
-                <p>Comparte la foto de tu entrega con la comunidad. Se subirá de forma local en tu navegador instantáneamente.</p>
-                <label className="btn btn-primary" htmlFor="customer-photo-input" style={{ cursor: "pointer" }}>
-                  <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Subir Foto de Entrega
-                </label>
-                <input type="file" id="customer-photo-input" accept="image/*" className="sr-only" onChange={handlePhotoUpload} />
-              </div>
-            </div>
             <div className="clients-grid" id="clients-photos-grid">
-              {allPhotos.map((photo) => (
+              {reviews.map((photo) => (
                 <div className="client-card" key={photo.id}>
-                  {!("isDefault" in photo && photo.isDefault) && (
-                    <button className="delete-photo-btn" aria-label="Eliminar foto subida" onClick={() => deleteClientPhoto(photo.id)}>
-                      <i className="fa-solid fa-trash-can" aria-hidden="true"></i>
-                    </button>
-                  )}
                   <div className="client-img-wrapper">
                     {photo.image && <img src={photo.image} alt="Cliente feliz recibiendo cachorro" className="client-img" loading="lazy" width={280} height={210} />}
                   </div>
@@ -610,6 +539,15 @@ export default function Home() {
                 <a href={C.contacto.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
                 <a href={C.contacto.social.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i className="fa-brands fa-tiktok"></i></a>
                 <a href={C.contacto.social.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="fa-brands fa-whatsapp"></i></a>
+              </div>
+              <div className="contacto-map">
+                <iframe
+                  title="Ubicación del criadero en Google Maps"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(C.contacto.address)}&z=15&output=embed`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
               </div>
             </div>
             <div className="contacto-card">
@@ -717,9 +655,6 @@ export default function Home() {
         </div>
         <div className="footer-bottom">
           <div className="container footer-bottom-content">
-            <div className="footer-designer-signature">
-              Diseñado con ❤️ por <a href="https://rameseba.com" target="_blank" rel="noopener noreferrer">@rameseba</a>
-            </div>
             <div className="footer-copyright-legal">
               <p>{C.footer.copyright}</p>
               <div className="footer-legal-links">

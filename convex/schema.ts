@@ -49,6 +49,8 @@ export default defineSchema({
     // Logos editables (Convex Storage). Si no hay, se usan los estáticos en /assets.
     logoStorageId: v.optional(v.id("_storage")),
     logoLightStorageId: v.optional(v.id("_storage")),
+    // Imagen de portada (banner principal del hero).
+    heroImageStorageId: v.optional(v.id("_storage")),
   }).index("by_key", ["key"]),
 
   // Sesiones del panel admin (login con contraseña única → token).

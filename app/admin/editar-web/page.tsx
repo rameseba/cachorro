@@ -146,6 +146,7 @@ export default function Editor() {
         content,
         logo: config?.logo ?? "/assets/logo.png",
         logoLight: config?.logoLight ?? "/assets/logo-light.png",
+        heroImage: (config as { heroImage?: string })?.heroImage ?? "/assets/hero_dog.png",
       },
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -303,6 +304,16 @@ export default function Editor() {
                 <div className="admin-card">
                   <Field label="Título" area value={content.hero.title} onChange={(v) => upd((c) => { c.hero.title = v; })} />
                   <Field label="Subtítulo" area value={content.hero.subtitle} onChange={(v) => upd((c) => { c.hero.subtitle = v; })} />
+                  <div className="admin-field">
+                    <label>Imagen de portada (banner principal)</label>
+                    <div className="admin-card-row">
+                      <img className="admin-thumb" src={(config as any)?.heroImage ?? "/assets/hero_dog.png"} alt="Banner" style={{ background: "#faf7f2" }} />
+                      <label className="admin-btn admin-btn-ghost admin-btn-sm" style={{ cursor: "pointer" }}>
+                        Cambiar imagen
+                        <input type="file" accept="image/*" style={{ display: "none" }} onChange={async (e) => { const f = e.target.files?.[0]; if (!f) return; const storageId = await uploadImage(f); await updateLogo({ token: token!, slot: "hero", storageId: storageId as any }); flash("Banner actualizado"); e.target.value = ""; }} />
+                      </label>
+                    </div>
+                  </div>
                   <ContentSave onSave={saveContent} />
                 </div>
               )}
