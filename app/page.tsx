@@ -19,6 +19,12 @@ type Product = {
   alt: string;
   hasKcc: boolean;
   isPuppy: boolean;
+  weight: string | null;
+  height: string | null;
+  lifespan: string | null;
+  coat: string | null;
+  temperament: string | null;
+  characteristics: string | null;
 };
 
 type Review = {
@@ -136,6 +142,7 @@ export default function Home() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
+  const [fichaProduct, setFichaProduct] = useState<Product | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [cartPop, setCartPop] = useState(false);
@@ -159,8 +166,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = cartOpen ? "hidden" : "";
-  }, [cartOpen]);
+    document.body.style.overflow = cartOpen || fichaProduct ? "hidden" : "";
+  }, [cartOpen, fichaProduct]);
 
   const showToast = useCallback((message: string, type: Toast["type"] = "info") => {
     const id = Date.now() + Math.random();
@@ -510,6 +517,11 @@ export default function Home() {
                     <div className="product-info">
                       <h3 className="product-title">{p.name}</h3>
                       <p className="product-description">{p.description}</p>
+                      {p.category !== "alimento" && (
+                        <button className="product-ficha-btn" onClick={() => setFichaProduct(p)}>
+                          <i className="fa-solid fa-circle-info" aria-hidden="true"></i> Ver ficha del cachorro
+                        </button>
+                      )}
                       <div className="product-footer">
                         <div className="product-price">
                           <span className="price-label">Valor aproximado</span>
@@ -684,6 +696,48 @@ export default function Home() {
           </div>
         </div>
       </aside>
+
+      {/* Ficha informativa del cachorro */}
+      {fichaProduct && (
+        <div className="ficha-modal" role="dialog" aria-modal="true" aria-labelledby="ficha-title" onClick={() => setFichaProduct(null)}>
+          <div className="ficha-card" onClick={(e) => e.stopPropagation()}>
+            <button className="ficha-close" aria-label="Cerrar ficha" onClick={() => setFichaProduct(null)}>
+              <i className="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <div className="ficha-media">
+              {fichaProduct.image ? (
+                <img src={fichaProduct.image} alt={fichaProduct.alt} />
+              ) : (
+                <div className="ficha-media-placeholder"><i className="fa-solid fa-paw"></i></div>
+              )}
+              {fichaProduct.hasKcc && (
+                <span className="ficha-kcc"><i className="fa-solid fa-certificate"></i> Certificado KCC</span>
+              )}
+            </div>
+            <div className="ficha-body">
+              <span className="ficha-tag">{fichaProduct.category === "pequena" ? "Raza Pequeña" : fichaProduct.category === "grande" ? "Raza Grande" : "Producto"}</span>
+              <h3 id="ficha-title">{fichaProduct.name}</h3>
+              <p className="ficha-desc">{fichaProduct.characteristics || fichaProduct.description}</p>
+              <ul className="ficha-specs">
+                {fichaProduct.weight && <li><span className="ficha-spec-label"><i className="fa-solid fa-weight-scale"></i> Peso</span><span>{fichaProduct.weight}</span></li>}
+                {fichaProduct.height && <li><span className="ficha-spec-label"><i className="fa-solid fa-ruler-vertical"></i> Estatura promedio</span><span>{fichaProduct.height}</span></li>}
+                {fichaProduct.lifespan && <li><span className="ficha-spec-label"><i className="fa-solid fa-heart-pulse"></i> Esperanza de vida</span><span>{fichaProduct.lifespan}</span></li>}
+                {fichaProduct.coat && <li><span className="ficha-spec-label"><i className="fa-solid fa-shield-dog"></i> Tipo de pelaje</span><span>{fichaProduct.coat}</span></li>}
+                {fichaProduct.temperament && <li><span className="ficha-spec-label"><i className="fa-solid fa-face-smile"></i> Temperamento</span><span>{fichaProduct.temperament}</span></li>}
+              </ul>
+              {!fichaProduct.weight && !fichaProduct.height && !fichaProduct.lifespan && !fichaProduct.coat && !fichaProduct.temperament && (
+                <p className="ficha-empty">Pronto agregaremos más detalles de este cachorro. ¡Consúltanos por WhatsApp!</p>
+              )}
+              <div className="ficha-actions">
+                <span className="ficha-price">{formatPrice(fichaProduct.price)}</span>
+                <button className="btn btn-primary" onClick={() => { addToCart(fichaProduct); setFichaProduct(null); }}>
+                  <i className="fa-solid fa-plus"></i> Agregar al carrito
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="footer" {...secProps("footer")}>

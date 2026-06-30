@@ -132,6 +132,12 @@ export default function Editor() {
       alt: pVal(p, "alt") ?? pVal(p, "name"),
       hasKcc: Boolean(pVal(p, "hasKcc")),
       isPuppy: Boolean(pVal(p, "isPuppy")),
+      weight: (pVal(p, "weight") as string) ?? null,
+      height: (pVal(p, "height") as string) ?? null,
+      lifespan: (pVal(p, "lifespan") as string) ?? null,
+      coat: (pVal(p, "coat") as string) ?? null,
+      temperament: (pVal(p, "temperament") as string) ?? null,
+      characteristics: (pVal(p, "characteristics") as string) ?? null,
     }));
     const mappedReviews = (reviews ?? []).map((r: any) => ({
       id: r._id,
@@ -254,6 +260,19 @@ export default function Editor() {
                           <input type="number" value={(pVal(p, "originalPrice") as number) ?? ""} onChange={(e) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], originalPrice: e.target.value === "" ? null : Number(e.target.value) } }))} />
                         </div>
                       </div>
+                      <details className="admin-ficha">
+                        <summary>Ficha informativa del cachorro</summary>
+                        <div className="admin-field-row">
+                          <Field label="Peso" value={(pVal(p, "weight") as string) ?? ""} onChange={(v) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], weight: v } }))} ph="Ej. 3 - 5 kg" />
+                          <Field label="Estatura promedio" value={(pVal(p, "height") as string) ?? ""} onChange={(v) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], height: v } }))} ph="Ej. 25 - 30 cm" />
+                        </div>
+                        <div className="admin-field-row">
+                          <Field label="Esperanza de vida" value={(pVal(p, "lifespan") as string) ?? ""} onChange={(v) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], lifespan: v } }))} ph="Ej. 12 - 15 años" />
+                          <Field label="Tipo de pelaje" value={(pVal(p, "coat") as string) ?? ""} onChange={(v) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], coat: v } }))} ph="Ej. Doble capa, largo" />
+                        </div>
+                        <Field label="Temperamento" value={(pVal(p, "temperament") as string) ?? ""} onChange={(v) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], temperament: v } }))} ph="Ej. Dócil, juguetón, leal" />
+                        <Field label="Características / descripción completa" area value={(pVal(p, "characteristics") as string) ?? ""} onChange={(v) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], characteristics: v } }))} ph="Información relevante del cachorro para su ficha." />
+                      </details>
                       <div className="admin-card-actions">
                         <label className="admin-checkbox"><input type="checkbox" checked={Boolean(pVal(p, "hasKcc"))} onChange={(e) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], hasKcc: e.target.checked } }))} /> KCC</label>
                         <label className="admin-checkbox"><input type="checkbox" checked={Boolean(pVal(p, "active"))} onChange={(e) => setPEdits((s) => ({ ...s, [p._id]: { ...s[p._id], active: e.target.checked } }))} /> Visible</label>

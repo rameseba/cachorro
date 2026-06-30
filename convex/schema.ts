@@ -20,6 +20,13 @@ export default defineSchema({
     alt: v.optional(v.string()),
     hasKcc: v.boolean(),
     isPuppy: v.boolean(),
+    // Ficha informativa del cachorro (todos opcionales).
+    weight: v.optional(v.string()),
+    height: v.optional(v.string()),
+    lifespan: v.optional(v.string()),
+    coat: v.optional(v.string()),
+    temperament: v.optional(v.string()),
+    characteristics: v.optional(v.string()),
     order: v.number(),
     active: v.boolean(),
   })

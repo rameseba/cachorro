@@ -88,6 +88,12 @@ const productFields = {
   alt: v.optional(v.string()),
   hasKcc: v.boolean(),
   isPuppy: v.boolean(),
+  weight: v.optional(v.string()),
+  height: v.optional(v.string()),
+  lifespan: v.optional(v.string()),
+  coat: v.optional(v.string()),
+  temperament: v.optional(v.string()),
+  characteristics: v.optional(v.string()),
 };
 
 export const listProductsAdmin = query({
@@ -138,6 +144,12 @@ export const updateProduct = mutation({
     hasKcc: v.optional(v.boolean()),
     isPuppy: v.optional(v.boolean()),
     active: v.optional(v.boolean()),
+    weight: v.optional(v.string()),
+    height: v.optional(v.string()),
+    lifespan: v.optional(v.string()),
+    coat: v.optional(v.string()),
+    temperament: v.optional(v.string()),
+    characteristics: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireSesion(ctx, args.token);

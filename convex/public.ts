@@ -30,6 +30,12 @@ export const listProducts = query({
         alt: p.alt ?? p.name,
         hasKcc: p.hasKcc,
         isPuppy: p.isPuppy,
+        weight: p.weight ?? null,
+        height: p.height ?? null,
+        lifespan: p.lifespan ?? null,
+        coat: p.coat ?? null,
+        temperament: p.temperament ?? null,
+        characteristics: p.characteristics ?? null,
       })),
     );
   },
