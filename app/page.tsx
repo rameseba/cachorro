@@ -790,6 +790,9 @@ export default function Home() {
         </div>
         <div className="footer-bottom">
           <div className="container footer-bottom-content">
+            <div className="footer-designer-signature">
+              Diseñado con ❤️ por <a href="https://rameseba.com" target="_blank" rel="noopener noreferrer">@rameseba</a>
+            </div>
             <div className="footer-copyright-legal">
               <p>{C.footer.copyright}</p>
               <div className="footer-legal-links">
