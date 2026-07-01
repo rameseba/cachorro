@@ -63,8 +63,13 @@ export default function Editor() {
   };
 
   // --- Datos del servidor ---
-  const products = useQuery(api.admin.listProductsAdmin, token ? { token } : "skip");
-  const reviews = useQuery(api.admin.listReviewsAdmin, token ? { token } : "skip");
+  // Solo pedir datos admin cuando la sesión está CONFIRMADA válida. Si el token
+  // está expirado/es inválido, estas queries lanzan en el servidor (requireSesion)
+  // y `useQuery` re-lanza durante el render, crasheando la página entera antes de
+  // que el efecto de redirección corra. Con este gate quedan en "skip" y el efecto
+  // de `valid === false` redirige limpio a /admin/login.
+  const products = useQuery(api.admin.listProductsAdmin, valid && token ? { token } : "skip");
+  const reviews = useQuery(api.admin.listReviewsAdmin, valid && token ? { token } : "skip");
   const config = useQuery(api.public.getSiteConfig);
 
   // --- Mutations ---
