@@ -280,6 +280,9 @@ export default function Editor() {
                           Imagen
                           <input type="file" accept="image/*" style={{ display: "none" }} onChange={async (e) => { const f = e.target.files?.[0]; if (!f) return; const storageId = await uploadImage(f); await updateProduct({ token, id: p._id, imageStorageId: storageId as any }); flash("Imagen actualizada"); e.target.value = ""; }} />
                         </label>
+                        {p.resolvedImage && (
+                          <button className="admin-btn admin-btn-ghost admin-btn-sm" onClick={async () => { if (!confirm("¿Quitar la imagen de este producto?")) return; await updateProduct({ token, id: p._id, imageStorageId: null }); flash("Imagen eliminada"); }}>Quitar imagen</button>
+                        )}
                         <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={async () => { const ed = pEdits[p._id] ?? {}; await updateProduct({ token, id: p._id, ...(ed as any) }); setPEdits((s) => { const n = { ...s }; delete n[p._id]; return n; }); flash("Producto guardado"); }}>Guardar</button>
                         <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={async () => { if (!confirm(`¿Eliminar "${pVal(p, "name")}"?`)) return; await deleteProduct({ token, id: p._id }); flash("Producto eliminado"); }}>Eliminar</button>
                       </div>
@@ -313,6 +316,9 @@ export default function Editor() {
                           Imagen
                           <input type="file" accept="image/*" style={{ display: "none" }} onChange={async (e) => { const f = e.target.files?.[0]; if (!f) return; const storageId = await uploadImage(f); await updateReview({ token, id: r._id, imageStorageId: storageId as any }); flash("Imagen actualizada"); e.target.value = ""; }} />
                         </label>
+                        {r.resolvedImage && (
+                          <button className="admin-btn admin-btn-ghost admin-btn-sm" onClick={async () => { if (!confirm("¿Quitar la imagen de esta reseña?")) return; await updateReview({ token, id: r._id, imageStorageId: null }); flash("Imagen eliminada"); }}>Quitar imagen</button>
+                        )}
                         <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={async () => { const ed = rEdits[r._id] ?? {}; await updateReview({ token, id: r._id, ...(ed as any) }); setREdits((s) => { const n = { ...s }; delete n[r._id]; return n; }); flash("Reseña guardada"); }}>Guardar</button>
                         <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={async () => { if (!confirm("¿Eliminar esta reseña?")) return; await deleteReview({ token, id: r._id }); flash("Reseña eliminada"); }}>Eliminar</button>
                       </div>

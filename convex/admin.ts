@@ -139,7 +139,8 @@ export const updateProduct = mutation({
     originalPrice: v.optional(v.union(v.number(), v.null())),
     description: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
-    imageStorageId: v.optional(v.id("_storage")),
+    // null = quitar la imagen actual sin subir una nueva.
+    imageStorageId: v.optional(v.union(v.id("_storage"), v.null())),
     alt: v.optional(v.string()),
     hasKcc: v.optional(v.boolean()),
     isPuppy: v.optional(v.boolean()),
@@ -153,11 +154,20 @@ export const updateProduct = mutation({
   },
   handler: async (ctx, args) => {
     await requireSesion(ctx, args.token);
-    const { token, id, originalPrice, ...rest } = args;
+    const { token, id, originalPrice, imageStorageId, ...rest } = args;
     const patch: Record<string, unknown> = { ...rest };
     // Permite limpiar originalPrice pasando null.
     if (originalPrice === null) patch.originalPrice = undefined;
     else if (originalPrice !== undefined) patch.originalPrice = originalPrice;
+    // Si se reemplaza o se quita la imagen, borra el archivo anterior de Storage
+    // para que no quede como basura huérfana.
+    if (imageStorageId !== undefined) {
+      const existing = await ctx.db.get(id);
+      if (existing?.imageStorageId && existing.imageStorageId !== imageStorageId) {
+        await ctx.storage.delete(existing.imageStorageId);
+      }
+      patch.imageStorageId = imageStorageId ?? undefined;
+    }
     await ctx.db.patch(id, patch);
   },
 });
@@ -232,13 +242,22 @@ export const updateReview = mutation({
     date: v.optional(v.string()),
     feedback: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
-    imageStorageId: v.optional(v.id("_storage")),
+    // null = quitar la imagen actual sin subir una nueva.
+    imageStorageId: v.optional(v.union(v.id("_storage"), v.null())),
     active: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     await requireSesion(ctx, args.token);
-    const { token, id, ...rest } = args;
-    await ctx.db.patch(id, rest);
+    const { token, id, imageStorageId, ...rest } = args;
+    const patch: Record<string, unknown> = { ...rest };
+    if (imageStorageId !== undefined) {
+      const existing = await ctx.db.get(id);
+      if (existing?.imageStorageId && existing.imageStorageId !== imageStorageId) {
+        await ctx.storage.delete(existing.imageStorageId);
+      }
+      patch.imageStorageId = imageStorageId ?? undefined;
+    }
+    await ctx.db.patch(id, patch);
   },
 });
 
@@ -302,6 +321,13 @@ export const updateLogo = mutation({
       .withIndex("by_key", (q) => q.eq("key", "global"))
       .unique();
     if (existing) {
+      // Borra la imagen anterior de este slot para que no quede como basura huérfana.
+      const previousId = (existing as Record<string, unknown>)[field] as
+        | typeof storageId
+        | undefined;
+      if (previousId && previousId !== storageId) {
+        await ctx.storage.delete(previousId);
+      }
       await ctx.db.patch(existing._id, { [field]: storageId });
     } else {
       await ctx.db.insert("siteConfig", {

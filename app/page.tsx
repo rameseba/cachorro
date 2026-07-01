@@ -557,9 +557,11 @@ export default function Home() {
             <div className="clients-grid" id="clients-photos-grid">
               {reviews.map((photo) => (
                 <div className="client-card" key={photo.id}>
-                  <div className="client-img-wrapper">
-                    {photo.image && <img src={photo.image} alt="Cliente feliz recibiendo cachorro" className="client-img" loading="lazy" width={280} height={210} />}
-                  </div>
+                  {photo.image && (
+                    <div className="client-img-wrapper">
+                      <img src={photo.image} alt="Cliente feliz recibiendo cachorro" className="client-img" loading="lazy" width={280} height={210} />
+                    </div>
+                  )}
                   <div className="client-card-body">
                     <p className="client-feedback">{photo.feedback}</p>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
