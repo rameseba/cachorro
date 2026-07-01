@@ -284,12 +284,12 @@ ul {
 .nav-list {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 22px;
 }
 
 .nav-link {
   font-family: var(--font-title);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--text-muted);
   position: relative;
@@ -1899,16 +1899,19 @@ ul {
   }
 }
 
-@media (max-width: 920px) {
-  /* Mostrar botón toggle móvil */
+@media (max-width: 1180px) {
+  /* Mostrar botón toggle móvil (el nav de 9 ítems no entra cómodo en laptops de 1024-1180px) */
   .mobile-nav-toggle {
     display: flex;
   }
-  
+
   /* Ocultar barra de navegación de escritorio */
   #desktop-nav {
     display: none;
   }
+}
+
+@media (max-width: 920px) {
   
   /* Ajustes Hero */
   .hero-container {
@@ -1963,7 +1966,11 @@ ul {
   :root {
     --header-height: 70px;
   }
-  
+
+  .section-padding {
+    padding: 48px 0;
+  }
+
   .logo-img {
     height: 76px;
     width: 76px;
@@ -2098,27 +2105,36 @@ ul {
     margin-bottom: 0;
   }
 
+  /* Garantías: grid de 2 columnas en mobile (en vez de carrusel de 1 tarjeta) para acortar el alto de página */
   .garantias-grid {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 16px;
-    padding: 10px 4px 20px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 24px;
   }
-  
-  .garantias-grid::-webkit-scrollbar {
-    display: none;
-  }
-  
+
   .garantia-card {
-    flex: 0 0 78%;
-    scroll-snap-align: center;
-    min-width: 240px;
-    margin-bottom: 0;
+    padding: 20px 14px;
+    text-align: center;
   }
-  
+
+  .garantia-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.15rem;
+    margin: 0 auto 12px;
+  }
+
+  .garantia-card h3 {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+
+  .garantia-card p {
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
   .product-info {
     padding: 12px;
   }
@@ -2224,6 +2240,16 @@ ul {
 .admin-preview { flex: 1; background: #e9e3d9; position: relative; }
 .admin-preview iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
+@media (max-width: 860px) {
+  .admin-topbar { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+  .admin-topbar h1 { font-size: 1rem; }
+  .admin-body { flex-direction: column; overflow-y: auto; }
+  .admin-panel { width: 100%; max-width: 100%; border-right: none; padding: 14px; }
+  /* En mobile mostramos solo el panel de edición a ancho completo; la vista previa en vivo
+     queda para desktop (el botón "Ver sitio" abre el sitio real en una pestaña aparte). */
+  .admin-preview { display: none; }
+}
+
 .admin-tabs { display: flex; gap: 6px; margin-bottom: 18px; }
 .admin-tab { flex: 1; padding: 9px; border-radius: var(--border-radius-sm); border: 1px solid rgba(140,98,57,0.15); background: #fff; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; cursor: pointer; font-family: var(--font-title); }
 .admin-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -2241,6 +2267,14 @@ ul {
 .admin-checkbox { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--text-dark); }
 .admin-checkbox input { width: auto; }
 .admin-section-title { font-family: var(--font-title); color: var(--primary); font-size: 1.05rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+.admin-hint-top { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+.admin-section-row { display: flex; align-items: center; gap: 4px; width: 100%; text-align: left; padding: 14px 12px; border: 1px solid rgba(140,98,57,0.12); border-radius: var(--border-radius-sm); background: #fff; margin-bottom: 8px; cursor: pointer; transition: var(--transition); }
+.admin-section-row:hover { border-color: var(--primary); background: #fcfaf7; }
+.admin-section-row-label { font-family: var(--font-title); font-weight: 600; font-size: 0.92rem; color: var(--text-dark); flex-shrink: 0; }
+.admin-section-row-hint { font-size: 0.78rem; color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-section-row-arrow { color: var(--primary); font-size: 1.1rem; flex-shrink: 0; }
+.admin-section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(140,98,57,0.12); }
+.admin-section-head strong { font-family: var(--font-title); color: var(--primary); font-size: 1rem; }
 .admin-saved { color: #1e8449; font-size: 0.8rem; }
 .admin-ficha { margin: 6px 0 12px; border: 1px solid rgba(140, 98, 57, 0.15); border-radius: 10px; padding: 4px 12px; background: #fff; }
 .admin-ficha > summary { cursor: pointer; font-weight: 600; color: var(--primary, #8c6239); font-size: 0.85rem; padding: 8px 0; list-style: revert; }
@@ -2281,6 +2315,34 @@ ul {
 }
 .servicio-card h3 { font-family: var(--font-title, serif); color: var(--primary, #8c6239); font-size: 1.2rem; margin-bottom: 10px; }
 .servicio-card p { color: var(--text-muted, #6b6258); line-height: 1.6; font-size: 0.96rem; }
+
+/* Servicios: grid de 2 columnas en mobile para acortar el alto de página (misma idea que Garantías) */
+@media (max-width: 580px) {
+  .servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .servicio-card {
+    padding: 20px 14px;
+    text-align: center;
+  }
+  .servicio-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.15rem;
+    margin: 0 auto 12px;
+  }
+  .servicio-card h3 {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .servicio-card p {
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+}
 
 /* ===== Sección Traslado de la Mascota ===== */
 .traslado-header { text-align: center; max-width: 820px; margin: 0 auto; }
@@ -2433,6 +2495,18 @@ ul {
   width: 100%;
   height: 260px;
   border: 0;
+}
+
+.map-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-sm {
+  padding: 10px 18px;
+  font-size: 0.85rem;
 }
 
 /* ===== Modo preview del editor: resaltar secciones clickeables ===== */

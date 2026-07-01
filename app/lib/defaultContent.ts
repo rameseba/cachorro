@@ -26,6 +26,7 @@ export type SiteContent = {
     title: string;
     description: string;
     address: string;
+    mapCoords: string;
     hours: string;
     online: string;
     social: { facebook: string; instagram: string; tiktok: string; whatsapp: string };
@@ -42,9 +43,29 @@ export type SiteContent = {
 
 // Combina el contenido guardado con los valores por defecto, de modo que las
 // secciones nuevas (añadidas después de un guardado anterior) no rompan el render.
+// El merge es de 2 niveles: cada sección (hero, contacto, etc.) se combina campo a
+// campo con su default, así un campo nuevo dentro de una sección ya guardada
+// (ej. contacto.mapCoords) sigue recibiendo su valor por defecto en vez de quedar
+// undefined solo porque la sección completa ya existía en el contenido guardado.
+function mergeSection<T>(def: T, stored: unknown): T {
+  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return def;
+  return { ...def, ...(stored as Partial<T>) };
+}
+
 export function withDefaults(stored: unknown): SiteContent {
   if (!stored || typeof stored !== "object") return DEFAULT_CONTENT;
-  return { ...DEFAULT_CONTENT, ...(stored as Partial<SiteContent>) } as SiteContent;
+  const s = stored as Partial<SiteContent>;
+  return {
+    hero: mergeSection(DEFAULT_CONTENT.hero, s.hero),
+    about: mergeSection(DEFAULT_CONTENT.about, s.about),
+    garantias: mergeSection(DEFAULT_CONTENT.garantias, s.garantias),
+    servicios: mergeSection(DEFAULT_CONTENT.servicios, s.servicios),
+    traslado: mergeSection(DEFAULT_CONTENT.traslado, s.traslado),
+    faq: mergeSection(DEFAULT_CONTENT.faq, s.faq),
+    contacto: mergeSection(DEFAULT_CONTENT.contacto, s.contacto),
+    footer: mergeSection(DEFAULT_CONTENT.footer, s.footer),
+    legal: mergeSection(DEFAULT_CONTENT.legal, s.legal),
+  };
 }
 
 export const DEFAULT_CONTENT: SiteContent = {
@@ -121,6 +142,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     title: "¿Listo para dar el paso? Contáctanos",
     description: "Ubicados en un entorno verde y limpio, perfecto para el desarrollo de los cachorros. Escríbenos o visítanos.",
     address: "Villa Cutipay, Parcela 7, Angol, Chile",
+    mapCoords: "-38.4517623,-71.8888067",
     hours: "Lunes a Viernes de 09:00 a 16:00 hrs",
     online: "Soporte por WhatsApp 24/7 para emergencias de crianza.",
     social: {

@@ -458,6 +458,7 @@ export default function Editor() {
                   <Field label="Título" value={content.contacto.title} onChange={(v) => upd((c) => { c.contacto.title = v; })} />
                   <Field label="Descripción" area value={content.contacto.description} onChange={(v) => upd((c) => { c.contacto.description = v; })} />
                   <Field label="Dirección" value={content.contacto.address} onChange={(v) => upd((c) => { c.contacto.address = v; })} />
+                  <Field label="Coordenadas del mapa (lat,lng)" value={content.contacto.mapCoords} onChange={(v) => upd((c) => { c.contacto.mapCoords = v; })} ph="Ej. -38.4517623,-71.8888067" />
                   <Field label="Horario" value={content.contacto.hours} onChange={(v) => upd((c) => { c.contacto.hours = v; })} />
                   <Field label="Contacto online" value={content.contacto.online} onChange={(v) => upd((c) => { c.contacto.online = v; })} />
                   <Field label="Facebook (URL)" value={content.contacto.social.facebook} onChange={(v) => upd((c) => { c.contacto.social.facebook = v; })} />

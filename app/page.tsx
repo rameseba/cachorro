@@ -281,13 +281,13 @@ export default function Home() {
           <nav className="nav" id="desktop-nav" aria-label="Menú principal de navegación">
             <ul className="nav-list">
               <li><a href="#inicio" className="nav-link active">Inicio</a></li>
-              <li><a href="#nosotros" className="nav-link">Sobre Nosotros</a></li>
+              <li><a href="#nosotros" className="nav-link">Nosotros</a></li>
               <li><a href="#garantias" className="nav-link">Garantías</a></li>
               <li><a href="#servicios" className="nav-link">Servicios</a></li>
               <li><a href="#traslado" className="nav-link">Traslado</a></li>
-              <li><a href="#tienda" className="nav-link">Cachorros y Tienda</a></li>
-              <li><a href="#clientes-felices" className="nav-link">Clientes Felices</a></li>
-              <li><a href="#faq" className="nav-link">Preguntas Frecuentes</a></li>
+              <li><a href="#tienda" className="nav-link">Tienda</a></li>
+              <li><a href="#clientes-felices" className="nav-link">Reseñas</a></li>
+              <li><a href="#faq" className="nav-link">Preguntas</a></li>
               <li><a href="#contacto" className="nav-link">Contacto</a></li>
             </ul>
           </nav>
@@ -618,11 +618,29 @@ export default function Home() {
               <div className="contacto-map">
                 <iframe
                   title="Ubicación del criadero en Google Maps"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(C.contacto.address)}&z=15&output=embed`}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(C.contacto.mapCoords)}&z=15&output=embed`}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   allowFullScreen
                 />
+              </div>
+              <div className="map-actions">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(C.contacto.mapCoords)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline btn-sm"
+                >
+                  <i className="fa-solid fa-map-location-dot" aria-hidden="true"></i> Ver en Google Maps
+                </a>
+                <a
+                  href={`https://waze.com/ul?ll=${encodeURIComponent(C.contacto.mapCoords)}&navigate=yes`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline btn-sm"
+                >
+                  <i className="fa-solid fa-diamond-turn-right" aria-hidden="true"></i> Ruta en Waze
+                </a>
               </div>
             </div>
             <div className="contacto-card">
