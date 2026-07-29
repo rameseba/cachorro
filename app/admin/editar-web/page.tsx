@@ -90,15 +90,25 @@ export default function Editor() {
   const [whatsapp, setWhatsapp] = useState("");
   const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT);
   const loadedRef = useRef(false);
+  const [contentDirty, setContentDirty] = useState(false);
   const [savedFlag, setSavedFlag] = useState<string | null>(null);
 
   useEffect(() => {
-    if (config && !loadedRef.current) {
+    if (!config) return;
+    if (!loadedRef.current) {
       setWhatsapp(config.whatsappNumber ?? "");
-      setContent(withDefaults(config.content));
       loadedRef.current = true;
     }
-  }, [config]);
+    // `config` es una query reactiva de Convex (siempre al día). Antes solo se
+    // aplicaba una vez al montar (loadedRef) y nunca más, así que un guardado
+    // tardío en esta misma pestaña reescribía TODO `content` con la copia
+    // vieja, pisando ediciones hechas mientras tanto en otra sesión/pestaña.
+    // Ahora se resincroniza en cada cambio real, salvo que haya ediciones
+    // sin guardar en curso (contentDirty).
+    if (!contentDirty) {
+      setContent(withDefaults(config.content));
+    }
+  }, [config, contentDirty]);
 
   const flash = (msg: string) => {
     setSavedFlag(msg);
@@ -106,15 +116,18 @@ export default function Editor() {
   };
 
   // Helper para editar el objeto content de forma inmutable
-  const upd = (fn: (c: SiteContent) => void) =>
+  const upd = (fn: (c: SiteContent) => void) => {
+    setContentDirty(true);
     setContent((prev) => {
       const n = structuredClone(prev);
       fn(n);
       return n;
     });
+  };
 
   const saveContent = async () => {
     await updateContent({ token: token!, content });
+    setContentDirty(false);
     flash("Contenido guardado");
   };
 
