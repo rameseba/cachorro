@@ -6,6 +6,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAdminToken } from "../useAdmin";
 import { DEFAULT_CONTENT, SiteContent, withDefaults } from "@/app/lib/defaultContent";
+import { comprimirImagen } from "@/app/lib/comprimir";
 
 type Cat = "pequena" | "grande" | "alimento";
 
@@ -198,7 +199,8 @@ export default function Editor() {
     );
   }, [iframeReady, previewPayload]);
 
-  async function uploadImage(file: File): Promise<string> {
+  async function uploadImage(original: File): Promise<string> {
+    const file = await comprimirImagen(original);
     const url = await generateUploadUrl({ token: token! });
     const res = await fetch(url, { method: "POST", headers: { "Content-Type": file.type }, body: file });
     const { storageId } = await res.json();
