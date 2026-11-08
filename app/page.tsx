@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { SiteContent, withDefaults } from "@/app/lib/defaultContent";
+import { liviana } from "@/app/lib/img";
 
 // ---------------------------------------------------------------------------
 // Tipos y helpers
@@ -275,7 +276,7 @@ export default function Home() {
       <header className={`header${scrolled ? " scrolled" : ""}`} id="main-header">
         <div className="header-container container">
           <a href="#" className="logo" aria-label="Criadero Noble Cachorro - Página de inicio" {...secProps("logo")}>
-            <img src={logo} alt="Noble Cachorro Logo" className="logo-img" id="logo-branding" width={96} height={96} />
+            <img src={liviana(logo)} alt="Noble Cachorro Logo" className="logo-img" id="logo-branding" width={96} height={96} />
             <span className="logo-text sr-only">Noble Cachorro</span>
           </a>
           <nav className="nav" id="desktop-nav" aria-label="Menú principal de navegación">
@@ -309,7 +310,7 @@ export default function Home() {
         <div className="mobile-nav-content">
           <div className="mobile-nav-header">
             <a href="#" className="logo" style={{ gap: 8 }} onClick={closeMobile}>
-              <img src={logo} alt="Noble Cachorro Logo" className="logo-img" style={{ height: 76 }} width={76} height={76} />
+              <img src={liviana(logo)} alt="Noble Cachorro Logo" className="logo-img" style={{ height: 76 }} width={76} height={76} />
               <span className="mobile-logo-text sr-only">Noble Cachorro</span>
             </a>
             <button className="mobile-nav-close" id="mobile-nav-close-btn" aria-label="Cerrar menú de navegación" onClick={closeMobile}>
@@ -363,7 +364,7 @@ export default function Home() {
             </div>
             <div className="hero-image-wrapper">
               <div className="hero-image-bg"></div>
-              <img src={heroImage} alt="Hermosos cachorros criados por Noble Cachorro listos para su nuevo hogar" className="hero-img" width={600} height={520} />
+              <img src={liviana(heroImage)} alt="Hermosos cachorros criados por Noble Cachorro listos para su nuevo hogar" className="hero-img" width={600} height={520} fetchPriority="high" />
             </div>
           </div>
         </section>
@@ -372,8 +373,8 @@ export default function Home() {
         <section className="about section-padding" id="nosotros" aria-labelledby="about-title" {...secProps("nosotros")}>
           <div className="container grid-about">
             <div className="about-images">
-              <div className="about-image-main"><img src="/assets/poodle.png" alt="Cachorro Poodle criado en Angol" className="about-img-1" loading="lazy" width={300} height={300} /></div>
-              <div className="about-image-sub"><img src="/assets/pomerania.png" alt="Cachorro Pomerania jugando" className="about-img-2" loading="lazy" width={220} height={220} /></div>
+              <div className="about-image-main"><img src="/assets/poodle.webp" alt="Cachorro Poodle criado en Angol" className="about-img-1" loading="lazy" width={300} height={300} /></div>
+              <div className="about-image-sub"><img src="/assets/pomerania.webp" alt="Cachorro Pomerania jugando" className="about-img-2" loading="lazy" width={220} height={220} /></div>
               <div className="experience-card"><span className="exp-number">9+</span><span className="exp-text">Años de Amor Canino</span></div>
             </div>
             <div className="about-content">
@@ -438,7 +439,7 @@ export default function Home() {
             <div className="traslado-body">
               {trasladoImage && (
                 <div className="traslado-image">
-                  <img src={trasladoImage} alt="Traslado seguro de cachorros del Criadero Noble Cachorro" loading="lazy" />
+                  <img src={liviana(trasladoImage)} alt="Traslado seguro de cachorros del Criadero Noble Cachorro" loading="lazy" />
                 </div>
               )}
               <div className="traslado-steps">
@@ -509,7 +510,7 @@ export default function Home() {
                         </div>
                       )}
                       {p.image ? (
-                        <img src={p.image} alt={p.alt} className="product-img" loading="lazy" width={280} height={280} />
+                        <img src={liviana(p.image)} alt={p.alt} className="product-img" loading="lazy" width={280} height={280} />
                       ) : (
                         <FoodBagSVG />
                       )}
@@ -559,7 +560,7 @@ export default function Home() {
                 <div className="client-card" key={photo.id}>
                   {photo.image && (
                     <div className="client-img-wrapper">
-                      <img src={photo.image} alt="Cliente feliz recibiendo cachorro" className="client-img" loading="lazy" width={280} height={210} />
+                      <img src={liviana(photo.image)} alt="Cliente feliz recibiendo cachorro" className="client-img" loading="lazy" width={280} height={210} />
                     </div>
                   )}
                   <div className="client-card-body">
@@ -680,7 +681,7 @@ export default function Home() {
               cart.map((item) => (
                 <div className="cart-item" key={item.id}>
                   {item.image ? (
-                    <img src={item.image} alt={item.name} className="cart-item-img" />
+                    <img src={liviana(item.image)} alt={item.name} className="cart-item-img" />
                   ) : (
                     <div className="cart-item-img-placeholder" style={{ width: 70, height: 70, display: "flex", alignItems: "center", justifyContent: "center", background: "#faf7f2", borderRadius: "var(--border-radius-sm)", border: "1px solid rgba(140, 98, 57, 0.1)" }}>
                       <i className="fa-solid fa-bag-shopping" style={{ color: "var(--primary)" }}></i>
@@ -726,7 +727,7 @@ export default function Home() {
             </button>
             <div className="ficha-media">
               {fichaProduct.image ? (
-                <img src={fichaProduct.image} alt={fichaProduct.alt} />
+                <img src={liviana(fichaProduct.image)} alt={fichaProduct.alt} />
               ) : (
                 <div className="ficha-media-placeholder"><i className="fa-solid fa-paw"></i></div>
               )}
@@ -763,7 +764,7 @@ export default function Home() {
       <footer className="footer" {...secProps("footer")}>
         <div className="container grid-footer">
           <div className="footer-brand">
-            <div className="footer-logo"><img src={logoLight} alt="Noble Cachorro Logo" className="footer-logo-img" width={140} height={140} /><span className="sr-only">Noble Cachorro</span></div>
+            <div className="footer-logo"><img src={liviana(logoLight)} alt="Noble Cachorro Logo" className="footer-logo-img" width={140} height={140} /><span className="sr-only">Noble Cachorro</span></div>
             <p className="footer-description">{C.footer.description}</p>
           </div>
           <div className="footer-links">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { liviana } from "@/app/lib/img";
 import { api } from "@/convex/_generated/api";
 import { SiteContent, withDefaults } from "./defaultContent";
 
@@ -14,7 +15,7 @@ export function LegalView({ docKey }: { docKey: "privacy" | "terms" }) {
       <header className="header" style={{ backgroundColor: "rgba(250, 247, 242, 0.95)", boxShadow: "var(--glass-shadow)" }}>
         <div className="container header-container">
           <a href="/" className="logo">
-            <img src={(config as { logo?: string })?.logo ?? "/assets/logo.png"} alt="Logo Criadero Noble Cachorro" className="logo-img" style={{ height: 64, width: 64, minWidth: 64 }} />
+            <img src={liviana((config as { logo?: string })?.logo ?? "/assets/logo.png")} alt="Logo Criadero Noble Cachorro" className="logo-img" style={{ height: 64, width: 64, minWidth: 64 }} />
           </a>
           <a href="/" className="btn btn-outline" style={{ padding: "10px 20px", fontSize: "0.9rem" }}>
             <i className="fa-solid fa-arrow-left" aria-hidden="true" style={{ marginRight: 8 }}></i>

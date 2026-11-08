@@ -24,14 +24,14 @@ export const metadata: Metadata = {
     title: "Criadero Noble Cachorro | Venta de Cachorros de Raza Pura en Chile",
     description:
       "Encuentra tu compañero ideal. Cachorros saludables, criados en un entorno natural y responsable con entrega garantizada.",
-    images: ["/assets/og-image.png"],
+    images: ["/assets/og-image.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Criadero Noble Cachorro | Venta de Cachorros de Raza Pura en Chile",
     description:
       "Crianza responsable en Angol, Chile. Cachorros de razas pequeñas y grandes, certificados y con carnet veterinario.",
-    images: ["/assets/og-image.png"],
+    images: ["/assets/og-image.jpg"],
   },
 };
 
@@ -56,6 +56,8 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
+          media="print"
+          data-diferida=""
         />
         <link
           rel="stylesheet"
@@ -63,9 +65,19 @@ export default function RootLayout({
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
+          media="print"
+          data-diferida=""
         />
+        {/* Fuentes e íconos sin bloquear la primera pintada (08-11-2026): se cargan con media="print"
+            y este script los activa apenas se lee el <head>. */}
+        <link rel="preload" as="image" href="/assets/hero_dog.webp" fetchPriority="high" />
       </head>
       <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "document.querySelectorAll('link[data-diferida]').forEach(function(l){l.media='all'})",
+          }}
+        />
         <ConvexClientProvider>{children}</ConvexClientProvider>
       </body>
     </html>
